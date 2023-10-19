@@ -41,7 +41,8 @@ app.post('/reg', (req,res) => {
     
     console.log(sql);
     con.query(sql2,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) =>{
-        if (err) res.status(404).send(err);
+        console.log(err);
+        if (err.errno == 1062) res.status(404).send({status: 404 , error: "Már létező email cím"});
         res.send(result);
     })   
 })
