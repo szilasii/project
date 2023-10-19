@@ -41,7 +41,7 @@ app.post('/reg', (req,res) => {
     
     console.log(sql);
     con.query(sql2,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) =>{
-        if (err) throw err;
+        if (err) res.status(404).send(err);
         res.send(result);
     })   
 })

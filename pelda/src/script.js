@@ -24,7 +24,7 @@ getData("http://localhost:8000/getdata").then((data) => {
     console.log(data);
 });
 
-
+ 
 
 
 
