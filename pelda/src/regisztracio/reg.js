@@ -3,7 +3,7 @@ regDataSave = (data) => {
     let loading = document.getElementById("loading");
     loading.style.visibility = "visible";
    
-    postData("http://localhost:8000/reg",data)
+    postData("http://localhost:8000/user",data)
     .then((response) => {
             return response.json();
         }).then((data) => {
