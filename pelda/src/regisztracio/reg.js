@@ -1,4 +1,4 @@
-
+import { postData } from "../script.js";
 regDataSave = (data) => {
     let loading = document.getElementById("loading");
     loading.style.visibility = "visible";

@@ -1,14 +1,11 @@
+import { getData }  from "../script.js";
 // Felhasználó ID bekérése a prompt ablakban
 const userId = prompt("Kérem, adja meg a felhasználó ID-jét:");
 
 // Ellenőrzés, hogy valóban van-e megadva ID
 if (userId !== null && userId !== "") {
     // Felhasználó adatainak lekérése a szerverről
-    fetch(`http://localhost:8000/user/${userId}`)
-        .then((response) => {
-            return response.json();
-        })
-        .then((userData) => {
+    getData(`http://localhost:8000/user/${userId}`).then((userData) => {
             // Ellenőrzés, hogy a szerver visszatért-e adatokkal
             if (userData.length > 0) {
                 // Az adatok megjelenítése a táblázatban

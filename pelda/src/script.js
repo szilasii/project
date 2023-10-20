@@ -6,7 +6,7 @@ async function getData(url="") {
             },    
         })
         return response.json();   
-} 
+}; 
 
 async function postData(url="", data = {}) {
     const response = await fetch(url, {
@@ -17,16 +17,15 @@ async function postData(url="", data = {}) {
         body: JSON.stringify(data),   
     })
     return response;   
-} 
+}; 
 
+// getData("http://localhost:8000/user").then((data) => {
+//     console.log(data);
+// });
 
-getData("http://localhost:8000/user").then((data) => {
-    console.log(data);
-});
+// getData("http://localhost:8000/user/1").then((data) => {
+//     console.log(data);
+// });
 
- 
-getData("http://localhost:8000/user/5").then((data) => {
-    console.log(data);
-});
-
+ export { getData, postData };
 
