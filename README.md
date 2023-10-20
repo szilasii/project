@@ -1,7 +1,4 @@
-
-
-
-##GET /user/:id
+## GET /user/:id
 Mit csinál a végpont?
 Vissza adja az összes User regisztrácios adatát
 Van-e paramétere?

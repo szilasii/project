@@ -52,6 +52,27 @@ app.post('/user', (req,res) => {
     })   
 })
 
+app.post('/address/:id', (req,res) => {
+
+    var con = mysql.createConnection(new Config());
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log('sikeres csatlakozás');
+    })
+   
+    const sql = 'insert into Address (zipCode,city,street,delivery,userID) values (?,?,?,?,?)';
+    
+    console.log(sql);
+    con.query(sql,[req.body.zipCode,req.body.city,req.body.street,req.body.delivery,req.params['id']], (err,result) =>{
+        if (err) 
+            if (err.errno == 1062) res.status(404).send({status: 404 , error: "Már létező email cím"});
+        
+        res.send(result);
+    })   
+})
+
+
+
 app.get('/user/:id', (req,res) => {
     var con = mysql.createConnection(new Config());
     con.connect(function(err) {
