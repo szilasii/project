@@ -1,5 +1,6 @@
 import { postData } from "../script.js";
-regDataSave = (data) => {
+
+function regDataSave(data) {
     let loading = document.getElementById("loading");
     loading.style.visibility = "visible";
    
@@ -18,3 +19,5 @@ regDataSave = (data) => {
             loading.style.visibility = "hidden";
           });
 }
+window.regDataSave = regDataSave;
+
