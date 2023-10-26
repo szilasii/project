@@ -36,6 +36,18 @@
                 <input type="text" name="accountNumber" id="" required="">
                 <label>Bankszámlaszám</label>
             </div>
+            <div class="user-box">
+                <input type="text" name="zipCode" id="zipCode" required="">
+                <label>Zip Code</label>
+            </div>
+            <div class="user-box">
+                <input type="text" name="city" id="city" required="">
+                <label>City</label>
+            </div>
+            <div class="user-box">
+                <input type="text" name="street" id="street" required="">
+                <label>Street</label>
+            </div>
             <a id="a">
                 <span></span>
                 <span></span>
@@ -65,7 +77,10 @@ form.addEventListener("formdata",(e) => {
         name: formData.get('name'),
         email: formData.get('email'),
         password: formData.get('password'),
-        accountNumber: formData.get('accountNumber')
+        accountNumber: formData.get('accountNumber'),
+        zipCode: formData.get('zipCode'),
+        city: formData.get('city'),
+        street: formData.get('street')
     }    
     regDataSave(data);
 })

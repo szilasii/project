@@ -39,17 +39,35 @@ app.post('/user', (req,res) => {
         if (err) throw err;
         console.log('sikeres csatlakozás');
     })
-    const sql = 'insert into User (name,email,password,accountNumber) values ("' +req.body.name + '","'+ req.body.email+'","'+ req.body.password+'","'+ req.body.accountNumber+'")';
-    const sql2 = 'insert into User (name,email,password,accountNumber) values (?,?,?,?)';
     
-    console.log(sql);
-    con.query(sql2,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) =>{
-        console.log(err);
-        if (err) 
-            if (err.errno == 1062) res.status(404).send({status: 404 , error: "Már létező email cím"});
+    const userSQL = 'insert into User (name,email,password,accountNumber,addressID) values (?,?,?,?,?)'; 
+    const addressSQL = 'insert into Address (zipCode,city,street) values (?,?,?)';
+     
+    con.query(addressSQL,[req.body.zipCode,req.body.city,req.body.street], (err,result) =>{
+        if (err) { 
+            if (err) res.status(404).send({status: 404 , error: "Hiba az address rögzítésekor"});
+            console.log(err)
+        }
+        else {
+        _resultid = result?.insertId     
+        if (_resultid) {
+            con.query(userSQL,[req.body.name,req.body.email,req.body.password,req.body.accountNumber,_resultid], (err,result) => {
+                if (err) { 
+                        deleteSQL = "delete from Address where addressID = ?"
+                        con.query(deleteSQL,[_resultid], (err,result) => {
+                              
+                        })
+                        res.status(404).send({status: 404 , error: "Hiba a user rögzítésekor"});
+                }
+                else {
+                    res.status(200).send({status:200,success:"Sikeres adatrögzítés"})
+                }
+            }) 
+            }
+        }
         
-        res.send(result);
-    })   
+    })  
+
 })
 
 app.post('/address', (req,res) => {

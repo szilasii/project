@@ -93,3 +93,5 @@ alter table `User` MODIFY addressID int;
 insert into User (name,email,password,accountNumber) values ("Bubuka","bubuka@maci.hu","hihi","1234-4567-8978-6547");
 select * from User;
 delete from User where userID = 5;
+
+delete from Address where addressID = 10;
