@@ -52,7 +52,7 @@ app.post('/user', (req,res) => {
     })   
 })
 
-app.post('/address/:id', (req,res) => {
+app.post('/address', (req,res) => {
 
     var con = mysql.createConnection(new Config());
     con.connect(function(err) {
@@ -60,10 +60,9 @@ app.post('/address/:id', (req,res) => {
         console.log('sikeres csatlakozás');
     })
    
-    const sql = 'insert into Address (zipCode,city,street,delivery,userID) values (?,?,?,?,?)';
-    
-    console.log(sql);
-    con.query(sql,[req.body.zipCode,req.body.city,req.body.street,req.body.delivery,req.params['id']], (err,result) =>{
+    const sql = 'insert into Address (zipCode,city,street) values (?,?,?)';
+
+    con.query(sql,[req.body.zipCode,req.body.city,req.body.street], (err,result) =>{
         if (err) 
             if (err.errno == 1062) res.status(404).send({status: 404 , error: "Már létező email cím"});
         
