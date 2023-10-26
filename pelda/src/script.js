@@ -27,5 +27,11 @@ async function postData(url="", data = {}) {
 //     console.log(data);
 // });
 
- export { getData, postData };
+
+// postData("http://localhost:8000/user",{name:"kis pista",email:"maci@gmail.com",password:"valami",accountNumber:"12235-145656"}).then((response) => {
+//     return response.json();
+//         }).then((data) => {console.log(data)});
+
+
+//export { getData, postData };
 

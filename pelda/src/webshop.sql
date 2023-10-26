@@ -7,16 +7,15 @@ create table IF NOT EXISTS User (
     name VARCHAR(40) NOT NULL,
     email VARCHAR(50) NOT NULL,
     password BLOB not null,
-    accountNumber VARCHAR(20),
-    addressID int not null,
-    skippingID int NULL
+    accountNumber VARCHAR(20)
 ) Engine=Innodb;    
 
 CREATE TABLE IF NOT EXISTS Address (addressID int NOT NULL PRIMARY KEY AUTO_INCREMENT,
     zipCode CHAR(4) NOT NULL,
     city VARCHAR(40) NOT NULL,
     street varchar(50) NOT NULL,
-    delevery TINYINT(1) DEFAULT 0
+    delevery TINYINT(1) DEFAULT 0,
+    userID int not null
 ) Engine=Innodb;
 
 CREATE TABLE IF NOT EXISTS Products (
@@ -51,21 +50,20 @@ CREATE TABLE IF NOT EXISTS InvoiceItem (
     productID int NOT NULL
 ) Engine=Innodb;
 
-ALTER TABLE User ADD FOREIGN KEY (addressId) REFERENCES Address(addressID);
-ALTER TABLE User ADD FOREIGN KEY (skippingId) REFERENCES Address(addressID);
+ALTER TABLE `Address` ADD FOREIGN KEY (userID) REFERENCES `User`(userID);
 ALTER TABLE Cart ADD FOREIGN KEY (userId) REFERENCES User(userID);
 ALTER TABLE Invoice ADD FOREIGN KEY (userId) REFERENCES User(userID);
 
 
 INSERT INTO `User` VALUES
-    (null,'Maci Laci','maci@laci.com',sha2('macika',256),'1234-5648-7878-8975',1,null),
-    (null,'Kiss Elemér','kiss.elemer@suli.com',sha2('kisselemer',256),'1234-4487-7878-8976',2,null),
-    (null,'Bukta János','bukta.janos@suli.com',sha2('buktajani',256),'1234-3545-7878-8977',3,null);
+    (null,'Maci Laci','maci@laci.com',sha2('macika',256),'1234-5648-7878-8975'),
+    (null,'Kiss Elemér','kiss.elemer@suli.com',sha2('kisselemer',256),'1234-4487-7878-8976'),
+    (null,'Bukta János','bukta.janos@suli.com',sha2('buktajani',256),'1234-3545-7878-8977');
 
 insert into `Address` VALUES 
-    (null,1115,'Budapest','Móricz Zsigmond utca 12',null),
-    (null,1134,'Budapest','Váci út 25 1/3',null),
-    (null,4587,'Esztergom','Béke ut 25',null);
+    (null,1115,'Budapest','Móricz Zsigmond utca 12',0,1),
+    (null,1134,'Budapest','Váci út 25 1/3',0,2),
+    (null,4587,'Esztergom','Béke ut 25',0,3);
 
 insert INTO `Address` (`addressID`,`zipCode`,city,street) VALUES
      (null,1117,'Budapest','Móricz Zsigmond utca 13');
@@ -95,3 +93,6 @@ select * from User;
 delete from User where userID = 5;
 
 delete from Address where addressID = 10;
+
+
+select * from User left join Address on User.`userID` = Address.`userID` WHERE User.userID = 3;  
