@@ -58,20 +58,22 @@ app.get('/user/:id', (req,res) => {
         if (err) throw err;
         console.log('sikeres csatlakozás');
     })
-    con.query('select * from User left Join Address on Address.userID = User.userId where User.userID = ?',[req.params['id']], (err,result) =>{
+    con.query('CALL getAllUserInfos(?)',[req.params['id']], (err,result) =>{
         if (err) throw err;
-        
-            console.log(result)
-            if (result.length > 0) {
+            console.log("Result:", result[0])
+            resultData = result[0];
+            if (resultData.length > 0) {
                 data = {name: "",
                 email: "",
+
                 accountNumber:"",
                 address: []
+
             } ;
-                data.name = result[0].name;
-                data.email = result[0].email;
-                data.accountNumber = result[0].accountNumber;
-                result.forEach(row => {
+                data.name = resultData[0].name;
+                data.email = resultData[0].email;
+                data.accountNumber = resultData[0].accountNumber;
+                resultData.forEach(row => {
                 data.address.push({zipCode: row.zipCode,city: row.city,street:row.street,delivery:row.delivery}) 
                 });
         }
@@ -83,6 +85,7 @@ app.get('/user/:id', (req,res) => {
 })
 
 app.post('/address/:id', (req,res) => {
+
 
     if (!req.params['id']) {
         res.status(404).send({status: 404 , error: "Nem adaott meg user id-t"});
@@ -104,6 +107,36 @@ app.post('/address/:id', (req,res) => {
     }) 
 })
 
+app.get('/proc',(req,res) => {
+
+    var con = mysql.createConnection(new Config());
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log('sikeres csatlakozás');
+    })
+    con.query('call allUserCount(@count)', (err,result) =>{
+        if (err) throw err;
+        con.query('select @count;', (err,result) =>{
+            if (err) throw err;
+            res.send(result);
+        })   
+    })   
+})
+
+app.get('/proci',(req,res) => {
+
+    var con = mysql.createConnection(new Config());
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log('sikeres csatlakozás');
+    })
+    con.query('select @count;', (err,result) =>{
+        if (err) throw err;
+        res.send(result);
+    })   
+})
+
+
 
 
 // publikáljuk a szervert
@@ -111,6 +144,4 @@ app.listen(port, () => {
 console.log(`Példa alkalmazás publikálva ${port}-on`);
 
 })
-
-
 

@@ -95,4 +95,68 @@ delete from User where userID = 5;
 delete from Address where addressID = 10;
 
 
-select * from User left join Address on User.`userID` = Address.`userID` WHERE User.userID = 3;  
+select * from User left join Address on User.`userID` = Address.`userID` WHERE User.userID = 3;
+
+delimiter //
+
+CREATE PROCEDURE if not EXISTS getAllUserInfos(IN userID int)
+BEGIN
+    select * from User left join Address on User.`userID` = Address.`userID` WHERE User.userID = userID;
+END//
+
+delimiter ;
+
+CALL getAllUserInfos(3);
+
+DELIMITER //
+
+CREATE PROCEDURE allUserCount(OUT count int)
+BEGIN
+    select count(userID) into count from User;
+END//
+
+DELIMITER ;
+
+call allUserCount(@count);
+
+SELECT @count;
+
+drop FUNCTION valmi;
+
+DELIMITER //
+CREATE FUNCTION valami (s VARCHAR(20))
+RETURNS VARCHAR(50) DETERMINISTIC
+RETURN CONCAT('Hello ',s,'!')//
+
+DELIMITER;
+
+Select valami("world");
+
+DELIMITER //
+CREATE FUNCTION fullName (vezNev varchar(20),kerNev varchar(40))
+RETURNS VARCHAR(60) DETERMINISTIC
+RETURN CONCAT(vezNev,' ',kernev)//
+
+DELIMITER;
+
+Select fullName(name,name) from User;
+select * From User;
+
+
+DELIMITER //
+
+CREATE TRIGGER insertUser BEFORE INSERT on User For Each Row
+BEGIN
+    SET NEW.password = sha2(NEW.password,256);
+END//
+
+DELIMITER;
+
+insert into User (name,email,password,accountNumber) values ("Bubuka","bubuka@macigg.hu","hihi","1234-4567-8978-6547");
+
+select * from `User`;
+
+
+
+
+
