@@ -1,4 +1,4 @@
-import { postData } from "../script.js";
+
 
 function regDataSave(data)  {
     postData("http://localhost:8000/address",data).then((response) => {

@@ -33,5 +33,5 @@ async function postData(url="", data = {}) {
 //         }).then((data) => {console.log(data)});
 
 
-//export { getData, postData };
+// export { getData, postData };
 
