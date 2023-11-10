@@ -1,4 +1,6 @@
 const mysql = require('mysql2');
+const config  = require('../App/config');
+
 // Ez a végpont regisztrál egy új felhasználót és lementi az adatbázisba
 function getAllUserInfos (req,res) {
 
