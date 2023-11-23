@@ -3,6 +3,7 @@ async function getData(url="") {
              method: "GET", // POST, PUT, DELETE ...       
             headers: {
              "Content-Type" : "application/json",
+             "Authorization" : "Bearer <token>"
             },    
         })
         return response.json();   

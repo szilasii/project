@@ -1,56 +1,66 @@
-const mysql = require('mysql2');
-const config  = require('../App/config');
+const mysql = require("mysql2");
+const config = require("../App/config");
 
-// Ez a végpont regisztrál egy új felhasználót és lementi az adatbázisba
-function getAllUserInfos (req,res) {
-
+// ez a függvény visszaadja az összes felhasználó adatát
+ function getAllUserInfos(req,res) {
     var con = mysql.createConnection(config.database);
     con.connect(function(err) {
         if (err) throw err;
         console.log('sikeres csatlakozás');
     })
+    con.query('select * from User', (err,result) =>{
+        if (err) throw err;
+        res.send(result);
+    })   
+}
+
+function getUserDataFromId(req,res) {
+    var con = mysql.createConnection(config.database);
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log('sikeres csatlakozás');
+    })
+    con.query('CALL getAllUserInfos(?) ',[req.params['id']], (err,result) =>{
+        if (err) throw err;
+        res.send(result);
+    })   
+}
+
+
+// Ez a függvény regisztrál egy új felhasználót és lementi az adatbázisba
+function regUser (req,res)  {
+    var con = mysql.createConnection(config.database);
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log('sikeres csatlakozás');
+    })
+    const sql = 'insert into User (name,email,password,accountNumber) values ("' +req.body.name + '","'+ req.body.email+'","'+ req.body.password+'","'+ req.body.accountNumber+'")';
+    const sql2 = 'insert into User (name,email,password,accountNumber) values (?,?,?,?)';
     
-    const userSQL = 'insert into User (name,email,password,accountNumber) values (?,?,?,?)'; 
-    con.query(userSQL,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) => {
-        if (err) { 
-            console.log(err)
-                res.status(404).send({status: 404 , error: "Hiba a user rögzítésekor"});
-        }   else {
-            res.status(200).send({status:200,success:"Sikeres adatrögzítés"})
-        }
-    }) 
-   
+    console.log(sql);
+    con.query(sql2,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) =>{
+        if (err) throw err;
+        res.send(result);
+    })   
 }
 
-function getUserDataFromID(req,res) {
+function createNewAddress (req,res) {
     var con = mysql.createConnection(config.database);
     con.connect(function(err) {
-        if (err) throw err;
+        if (err) throw err; 
         console.log('sikeres csatlakozás');
     })
-    con.query('CALL getAllUserInfos(?)',[req.params['id']], (err,result) =>{
+    const sql = 'insert into Address (zipCode,city,street,userID) values (?,?,?,?)';
+    
+    console.log(sql);
+    con.query(sql,[req.body.zipCode,req.body.city,req.body.street,req.params["id"]], (err,result) =>{
         if (err) throw err;
-            console.log("Result:", result[0])
-            resultData = result[0];
-            if (resultData.length > 0) {
-                data = {name: "",
-                email: "",
-
-                accountNumber:"",
-                address: []
-
-            } ;
-                data.name = resultData[0].name;
-                data.email = resultData[0].email;
-                data.accountNumber = resultData[0].accountNumber;
-                resultData.forEach(row => {
-                data.address.push({zipCode: row.zipCode,city: row.city,street:row.street,delivery:row.delivery}) 
-                });
-        }
-        console.log(data)    
-        res.send(data);
-    })     
+        res.send(result);
+    })   
 }
 
+
+exports.createNewAddress = createNewAddress
 exports.getAllUserInfos = getAllUserInfos
-exports.getUserDataFromID = getUserDataFromID
+exports.getUserDataFromId = getUserDataFromId
+exports.regUser = regUser

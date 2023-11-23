@@ -155,6 +155,8 @@ DELIMITER;
 insert into User (name,email,password,accountNumber) values ("Bubuka","bubuka@macigg.hu","hihi","1234-4567-8978-6547");
 
 select * from `User`;
+alter table User ADD token VARCHAR(255);
+
 
 
 
