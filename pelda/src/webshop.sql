@@ -158,7 +158,15 @@ select * from `User`;
 alter table User ADD token VARCHAR(255);
 
 
+delimiter //
+
+CREATE PROCEDURE if not EXISTS userLogin(IN mail Varchar(50), pwd varchar(50))
+BEGIN
+    select userID, name, email from User  WHERE User.email = mail And User.password = SHA2(pwd,256);
+END;
+
+delimiter ;
 
 
-
+call userLogin("maci@laci.com","macik");
 

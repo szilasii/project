@@ -6,6 +6,7 @@ app.use(express.json());
 app.use(require('../router/router'))
 app.use('/api', require("../addr/router"));
 app.use('/api',require("../user/router"));
+app.use('/api',require("../login/router"));
 
 
 module.exports = app
