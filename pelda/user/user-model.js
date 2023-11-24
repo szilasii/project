@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const config = require("../App/config");
 const validator = require("email-validator");
 const jwt = require("jsonwebtoken");
+const User = require("./user");
 
 // ez a függvény visszaadja az összes felhasználó adatát
  function getAllUserInfos(req,res) {
@@ -33,44 +34,52 @@ function getUserDataFromId(req,res) {
 async function regUser (req,res)  {
 
 
+    const user = new User(null,req.body.name,req.body.email,req.body.accountNumber,null);
 
-    const { name, email, password, accountNumber} = req.body;
-
-    console.log(name, email, password, accountNumber);
-
-    if (!(name && email && password && accountNumber)) {
+    if (!(user.name && user.email && req.body.password && user.accountNumber)) {
         res.status(400).send("Töltsd ki az adatatokat rendesen!");
     }
 
-    if (!validator.validate(email))  {
+    if (!validator.validate(user.email))  {
         res.status(400).send("Nem megfelelő formátumú email!");        
     }
 
+    
     //ecryptedPw = await bcrypt.hash(password,10);    
 
-    const token = jwt.sign(
-            {
-                userid: email, name 
-            },
-            config.TokenKey,
-            {
-                expiresIn:"2h",
-            });    
+       
 
     var con = mysql.createConnection(config.database);
     con.connect(function(err) {
         if (err) throw err;
         console.log('sikeres csatlakozás');
     })
-    const sql = 'insert into User (name,email,password,accountNumber,token) values ("' +req.body.name + '","'+ req.body.email+'","'+ req.body.password+'","'+ req.body.accountNumber+'")';
-    const sql2 = 'insert into User (name,email,password,accountNumber,token) values (?,?,?,?,?)';
     
-    console.log(sql);
-    con.query(sql2,[req.body.name,req.body.email,req.body.password,req.body.accountNumber,token], (err,result) =>{
+    const sql = 'insert into User (name,email,password,accountNumber) values (?,?,?,?)';
+    con.query(sql,[req.body.name,req.body.email,req.body.password,req.body.accountNumber], (err,result) =>{
         if (err) throw err;
-        res.send(result);
+        const token = jwt.sign(
+            {
+                userID: result.insertId,
+                email: user.email
+            },
+            config.TokenKey,
+            {
+                expiresIn:"2h",
+            }); 
+        user.token = token;
+        user.userID = result.insertId;    
+        console.log(user.userID)    
+        con.connect(function(err) {
+            if (err) throw err;
+            console.log('sikeres csatlakozás');
+        })        
+        con.query('call userUpdateToken(?,?)',[user.userID,token],(err,result,fields)=>{
+            if (err) throw err;
+            console.log(user.token)
+            res.send(user);
+        })
     })   
-    
 }
 
 function createNewAddress (req,res) {

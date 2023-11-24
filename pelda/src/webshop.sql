@@ -55,15 +55,22 @@ ALTER TABLE Cart ADD FOREIGN KEY (userId) REFERENCES User(userID);
 ALTER TABLE Invoice ADD FOREIGN KEY (userId) REFERENCES User(userID);
 
 
-INSERT INTO `User` VALUES
-    (null,'Maci Laci','maci@laci.com',sha2('macika',256),'1234-5648-7878-8975'),
-    (null,'Kiss Elemér','kiss.elemer@suli.com',sha2('kisselemer',256),'1234-4487-7878-8976'),
-    (null,'Bukta János','bukta.janos@suli.com',sha2('buktajani',256),'1234-3545-7878-8977');
 
+delete from User;
+
+ALTER table User AUTO_INCREMENT = 1;
+
+INSERT INTO `User` VALUES
+    (null,'Maci Laci','maci@laci.com','macika','1234-5648-7878-8975',null),
+    (null,'Kiss Elemér','kiss.elemer@suli.com','kisselemer','1234-4487-7878-8976',null),
+    (null,'Bukta János','bukta.janos@suli.com','buktajani','1234-3545-7878-8977',null);
+
+delete from Address;
+ALTER table Address AUTO_INCREMENT = 1;
 insert into `Address` VALUES 
     (null,1115,'Budapest','Móricz Zsigmond utca 12',0,1),
-    (null,1134,'Budapest','Váci út 25 1/3',0,2),
-    (null,4587,'Esztergom','Béke ut 25',0,3);
+    (null,1134,'Budapest','Váci út 25 1/3',0,1),
+    (null,4587,'Esztergom','Béke ut 25',0,2);
 
 insert INTO `Address` (`addressID`,`zipCode`,city,street) VALUES
      (null,1117,'Budapest','Móricz Zsigmond utca 13');
@@ -148,7 +155,7 @@ DELIMITER //
 CREATE TRIGGER insertUser BEFORE INSERT on User For Each Row
 BEGIN
     SET NEW.password = sha2(NEW.password,256);
-END//
+END;
 
 DELIMITER;
 
@@ -159,7 +166,7 @@ alter table User ADD token VARCHAR(255);
 
 
 delimiter //
-
+drop procedure userLogin;
 CREATE PROCEDURE if not EXISTS userLogin(IN mail Varchar(50), pwd varchar(50))
 BEGIN
     select userID, name, email from User  WHERE User.email = mail And User.password = SHA2(pwd,256);
@@ -167,6 +174,23 @@ END;
 
 delimiter ;
 
+drop PROCEDURE userUpdateToken;
 
-call userLogin("maci@laci.com","macik");
+CREATE PROCEDURE if not EXISTS userUpdateToken(IN id int, token Text)
+BEGIN
+    UPDATE User Set User.token = token where User.userID = id;     
+END;
 
+delimiter ;
+
+call userLogin("maci@laci.com","macika");
+
+call `userUpdateToken`(1,"dsagfdsg");
+
+alter table User MODIFY token TEXT;
+
+select userID, name, email from User  WHERE  User.password = sha2("macika",256);
+
+
+88daa826fbe1108a8eff7848f62560dfd81754dae90dcd0bed9882a8065fd8b6;
+select sha2('macika',256);
