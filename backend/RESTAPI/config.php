@@ -1,5 +1,5 @@
 <?php
-$devlopment = false;
+$devlopment = true;
 
 $secret = [
     'mysqlHost' => 'localhost',
