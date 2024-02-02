@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "email-validator": "^2.0.4"
+    "email-validator": "^2.0.4",
+    "ws": "^8.16.0"
   }
 }
